@@ -43,9 +43,14 @@ import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
  * @author Mateusz Slawomir Lach (matlak, msl)
  * @author Damian Marciniak
  */
+//TODO: REFACTOR HERE!!
 public class MovesHistory extends AbstractTableModel
 {
     
+    private static final int CHAR_8 = 56;
+
+    private static final int CHAR_1 = 49;
+
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = Logger.getLogger(MovesHistory.class);
@@ -450,7 +455,7 @@ public class MovesHistory extends AbstractTableModel
                 return false;
             }
             sign = move.charAt(from + 1);
-            if (sign < 49 || sign > 56) //if lower than '1' or higher than '8'
+            if (sign < CHAR_1 || sign > CHAR_8)
             {
                 return false;
             }
@@ -467,7 +472,7 @@ public class MovesHistory extends AbstractTableModel
                     return false;
                 }
                 sign = move.charAt(from + 4);
-                if (sign < 49 || sign > 56) //if lower than '1' or higher than '8'
+                if (sign < CHAR_1 || sign > CHAR_8)
                 {
                     return false;
                 }
