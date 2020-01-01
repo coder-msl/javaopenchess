@@ -304,7 +304,7 @@ public class MovesHistory extends AbstractTableModel
 
     private String addMoveHandleUpsideDown(String locMove, Square begin)
     {
-        locMove += Character.toString((char) ( ( Chessboard.getBottom() - begin.getPozX()) + CHAR_TINY_A_ASCII));//add letter of Square from which moves was made
+        locMove += Character.toString((char) ( ( Chessboard.BOTTOM - begin.getPozX()) + CHAR_TINY_A_ASCII));//add letter of Square from which moves was made
         locMove += Integer.toString( begin.getPozY() + 1 );//add number of Square from which moves was made
         return locMove;
     }
@@ -614,7 +614,7 @@ public class MovesHistory extends AbstractTableModel
             {
                 Square[][] squares = this.game.getChessboard().getSquares();
                 xTo = locMove.charAt(from) - CHAR_TINY_A_ASCII;//from ASCII
-                yTo = Chessboard.getBottom() - (locMove.charAt(from + 1) - 49);//from ASCII    
+                yTo = Chessboard.BOTTOM - (locMove.charAt(from + 1) - 49);//from ASCII    
                 for(int i=0; i<squares.length && !pieceFound; i++)
                 {
                     for(int j=0; j<squares[i].length && !pieceFound; j++)
@@ -641,9 +641,9 @@ public class MovesHistory extends AbstractTableModel
             else
             {
                 xFrom = locMove.charAt(from) - CHAR_TINY_A_ASCII;//from ASCII
-                yFrom = Chessboard.getBottom() - (locMove.charAt(from + 1) - 49);//from ASCII
+                yFrom = Chessboard.BOTTOM - (locMove.charAt(from + 1) - 49);//from ASCII
                 xTo = locMove.charAt(from + 3) - CHAR_TINY_A_ASCII;//from ASCII
-                yTo = Chessboard.getBottom() - (locMove.charAt(from + 4) - 49);//from ASCII
+                yTo = Chessboard.BOTTOM - (locMove.charAt(from + 4) - 49);//from ASCII
             }
             canMove = this.game.simulateMove(xFrom, yFrom, xTo, yTo, null);
             if (!canMove) //if moves is illegal

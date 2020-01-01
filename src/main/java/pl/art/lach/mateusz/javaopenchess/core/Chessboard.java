@@ -28,8 +28,6 @@ import java.util.Set;
 import pl.art.lach.mateusz.javaopenchess.core.moves.Castling;
 import pl.art.lach.mateusz.javaopenchess.core.moves.Move;
 import pl.art.lach.mateusz.javaopenchess.core.moves.MovesHistory;
-import pl.art.lach.mateusz.javaopenchess.display.views.chessboard.implementation.graphic2D.Chessboard2D;
-import pl.art.lach.mateusz.javaopenchess.display.views.chessboard.ChessboardView;
 import pl.art.lach.mateusz.javaopenchess.utils.Settings;
 import org.apache.log4j.*;
 import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
@@ -45,9 +43,9 @@ public class Chessboard
 {
     private static final Logger LOG = Logger.getLogger(Chessboard.class);
     
-    protected static final int TOP = 0;
+    public static final int TOP = 0;
     
-    protected static final int BOTTOM = 7;
+    public static final int BOTTOM = 7;
     
     public static final int LAST_SQUARE = 7;
     
@@ -114,22 +112,6 @@ public class Chessboard
         this.movesObject = moves;
     }/*--endOf-Chessboard--*/
     
-
-    /**
-     * @return the top
-     */
-    public static int getTop() 
-    {
-        return TOP;
-    }
-
-    /**
-     * @return the bottom
-     */
-    public static int getBottom() 
-    {
-        return BOTTOM;
-    }
 
     public void setPieces4NewGame(Player plWhite, Player plBlack)
     {

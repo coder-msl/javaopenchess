@@ -23,7 +23,7 @@ import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
  */
 public interface DataImporter
 {
-    public Game importData(String data) throws ReadGameError;
+    Game importData(String data) throws ReadGameError;
     
-    public void importData(String data, Game game) throws ReadGameError;
+    void importData(String data, Game game) throws ReadGameError;
 }
