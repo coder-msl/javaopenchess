@@ -168,10 +168,9 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
     {
         if (null != game)
         {
-            String title = String.format(TAB_LABEL_STRING_FORMAT,
-                game.getSettings().getPlayerWhite().getName(),
-                game.getSettings().getPlayerBlack().getName()
-            );
+            String whiteName = game.getSettings().getPlayerWhite().getName();
+            String blackName = game.getSettings().getPlayerBlack().getName();
+            String title = String.format(TAB_LABEL_STRING_FORMAT, whiteName, blackName);
             this.gamesPane.addTab(title, game);
         }
     }
@@ -179,7 +178,7 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
     public Component getTabComponent(Game game)
     {
         int tabNumber = this.getTabNumber(game);
-        if (0 <= tabNumber)
+        if (tabNumber >= 0)
         {
             return this.gamesPane.getComponent(tabNumber);
         }
@@ -241,10 +240,7 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
                 "Something wrong creating window - perhaps themeList is null: ",
                 exc
             );
-            JOptionPane.showMessageDialog(
-                app.getMainFrame(),
-                exc.getMessage()
-            );
+            JOptionPane.showMessageDialog(app.getMainFrame(), exc.getMessage());
         }
     }
 
@@ -345,13 +341,15 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
         {
             fullPath = fullPath.substring(0, fullPath.lastIndexOf(BACK_SLASH));
         }
-        int lastDotPos = fullPath.lastIndexOf(DOT);
-        String newFilePath = selFile.getAbsolutePath() + DOT + tf.name().toLowerCase();
-        if (lastDotPos >= 0)
+        int lastDotIndex = fullPath.lastIndexOf(DOT);
+        String newFilePath = selFile.getAbsolutePath();
+        String chosenExtension = DOT + tf.name().toLowerCase();
+        if (!fullPath.endsWith(chosenExtension)) {
+            newFilePath +=  chosenExtension;
+        }
+        if (lastDotIndex >= 0)
         {
-            String extension = fullPath.substring(fullPath.lastIndexOf(DOT),
-                fullPath.length() - fullPath.lastIndexOf(DOT)
-            );
+            String extension = fullPath.substring(lastDotIndex);
             if (!extension.equalsIgnoreCase(tf.name()))
             {
                 resultFile = new File(newFilePath);
