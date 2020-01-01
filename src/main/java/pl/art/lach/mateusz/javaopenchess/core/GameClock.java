@@ -32,11 +32,11 @@ public class GameClock extends JPanel implements Runnable
 
     private static final Logger LOG = org.apache.log4j.Logger.getLogger(GameClock.class);
 
-    private Clock clockWhitePlayer;
+    private PlayerClock clockWhitePlayer;
     
-    private Clock clockBlackPlayer;
+    private PlayerClock clockBlackPlayer;
     
-    private Clock activeClock;
+    private PlayerClock activeClock;
     
     private Settings settings;
     
@@ -53,8 +53,8 @@ public class GameClock extends JPanel implements Runnable
     GameClock(Game game)
     {
         super();
-        this.clockWhitePlayer = new Clock();
-        this.clockBlackPlayer = new Clock();
+        this.clockWhitePlayer = PlayerClock.getZeroTimeInstance();
+        this.clockBlackPlayer = PlayerClock.getZeroTimeInstance();
         this.activeClock = this.clockWhitePlayer;
         this.game = game;
         this.settings = game.getSettings();
@@ -193,10 +193,8 @@ public class GameClock extends JPanel implements Runnable
      */
     public void setTimes(int t1, int t2)
     {
-        /*rather in chess game players got the same time 4 game, so why in documentation
-         * this method've 2 parameters ? */
-        this.clockWhitePlayer.init(t1);
-        this.clockBlackPlayer.init(t2);
+        this.clockWhitePlayer = PlayerClock.getInstanceWithTimeLeft(t1);
+        this.clockBlackPlayer = PlayerClock.getInstanceWithTimeLeft(t2);
     }
 
     /** Method with is setting the players clocks
@@ -227,7 +225,7 @@ public class GameClock extends JPanel implements Runnable
         {
             if (this.activeClock != null)
             {
-                if (this.activeClock.decrement())
+                if (this.activeClock.decrementOneSecond())
                 {
                     repaint();
                     try

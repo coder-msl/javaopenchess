@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import pl.art.lach.mateusz.javaopenchess.core.Clock;
+import pl.art.lach.mateusz.javaopenchess.core.PlayerClock;
 
 /**
  * @author Mateusz Slawomir Lach (matlak, msl)
@@ -27,50 +27,50 @@ public class ClockTest {
 
     @Test
     public void testPositiveDecrementation() {
-        Clock clock = new Clock(50);
-        boolean result = clock.decrement();
+        PlayerClock clock = PlayerClock.getInstanceWithTimeLeft(50);
+        boolean result = clock.decrementOneSecond();
         assertEquals(49, clock.getLeftTime());
         assertTrue(result);
     }
     @Test
     public void testNegativeDecrementation() {
-        Clock clock = new Clock(0);
-        boolean result = clock.decrement();
+        PlayerClock clock = PlayerClock.getInstanceWithTimeLeft(0);
+        boolean result = clock.decrementOneSecond();
         assertEquals(0, clock.getLeftTime());
         assertFalse(result);
     }
     
     @Test
     public void testgetAsStringOneHour() {
-        Clock clock = new Clock(60);
+        PlayerClock clock = PlayerClock.getInstanceWithTimeLeft(60);
         String result = clock.getAsString();
         assertEquals("01:00", result);
     }
 
     @Test
     public void testgetAsStringOneHourAndFiveMinutes() {
-        Clock clock = new Clock(65);
+        PlayerClock clock = PlayerClock.getInstanceWithTimeLeft(65);
         String result = clock.getAsString();
         assertEquals("01:05", result);
     }
     
     @Test
     public void testgetAsStringOneHourAndTenMinutes() {
-        Clock clock = new Clock(70);
+        PlayerClock clock = PlayerClock.getInstanceWithTimeLeft(70);
         String result = clock.getAsString();
         assertEquals("01:10", result);
     }
     
     @Test
     public void testgetAsStringElevenMinutes() {
-        Clock clock = new Clock(660);
+        PlayerClock clock = PlayerClock.getInstanceWithTimeLeft(660);
         String result = clock.getAsString();
         assertEquals("11:00", result);
     }
     
     @Test
     public void testClockDefaultValueSetsToZero() {
-        Clock clock = new Clock();
+        PlayerClock clock = PlayerClock.getZeroTimeInstance();
         int time = clock.getLeftTime();
         
         assertEquals(0, time);

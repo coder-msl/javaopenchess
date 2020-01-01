@@ -20,32 +20,28 @@ import pl.art.lach.mateusz.javaopenchess.core.players.Player;
  * Class to represent seperate wall-clock for one player. Full ChessClock is
  * represented by GameClock object (two clock - one for each player)
  * 
- * @author Mateusz Slawomir Lach (matlak, msl)
- * @author Damian Marciniak
+ * @author Mateusz Slawomir Lach (matlak, msl)x
  */
-public class Clock {
+public class PlayerClock {
 
     private static final String COLON = ":";
 
-    private final static String ZERO = "0";
+    private static final String ZERO = "0";
 
     private int timeLeftInSeconds = 0;
 
     private Player player;
 
-    /**
-     * default constructor, sets timeLeft to 0 minutes, 0 seconds.
-     */
-    Clock() {
-        init(timeLeftInSeconds);
-    }
-
-    Clock(int timeLeftInSeconds) {
-        init(timeLeftInSeconds);
-    }
-
-    public final void init(int timeLeftInSeconds) {
+    private PlayerClock(int timeLeftInSeconds) {
         this.timeLeftInSeconds = timeLeftInSeconds;
+    }
+    
+    public static PlayerClock getZeroTimeInstance() {
+        return new PlayerClock(0);
+    }
+    
+    public static PlayerClock getInstanceWithTimeLeft(int timeLeft) {
+        return new PlayerClock(timeLeft);
     }
 
     /**
@@ -53,7 +49,7 @@ public class Clock {
      * 
      * @return bool true if time_left > 0, else returns false
      */
-    public boolean decrement() {
+    public boolean decrementOneSecond() {
         if (timeLeftInSeconds > 0) {
             timeLeftInSeconds = timeLeftInSeconds - 1;
             return true;
@@ -94,21 +90,31 @@ public class Clock {
      * @return String of actual left game time with ':' digits in mm:ss format
      */
     public String getAsString() {
-        String minutesAsString;
+        return getMinutesAsString() + COLON + getSecondsAsString();
+    }
+    
+    private String getMinutesAsString() {
+        String minutesAsString = "";
         Integer minutes = timeLeftInSeconds / 60;
-        Integer seconds = timeLeftInSeconds % 60;
+        
         if (minutes < 10) {
             minutesAsString = ZERO + minutes.toString();
         } else {
             minutesAsString = minutes.toString();
         }
-        String result = minutesAsString + COLON;
-        if (seconds < 10) {
-            result = result + ZERO + seconds.toString();
-        } else {
-            result = result + seconds.toString();
-        }
-
-        return result;
+        return minutesAsString;
     }
+    
+    private String getSecondsAsString() {
+        String secondsAsString = "";
+        Integer seconds = timeLeftInSeconds % 60;
+        if (seconds < 10) {
+            secondsAsString = secondsAsString + ZERO + seconds.toString();
+        } else {
+            secondsAsString = secondsAsString + seconds.toString();
+        }
+        return secondsAsString;
+    }
+    
+
 }
