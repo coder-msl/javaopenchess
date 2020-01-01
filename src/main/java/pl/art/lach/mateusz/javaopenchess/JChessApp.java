@@ -30,6 +30,10 @@ import java.awt.Window;
 public class JChessApp extends SingleFrameApplication
 {
 
+    private static final String MAC = "Mac";
+
+    private static final String OS_NAME = "os.name";
+
     protected static JChessView javaChessView;
 
     public final static String LOG_FILE = "log4j.properties";
@@ -83,6 +87,9 @@ public class JChessApp extends SingleFrameApplication
     {
         launch(JChessApp.class, args);
         Properties logProp = new Properties();
+        if (isMac()) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
         try
         {
             logProp.load(JChessApp.class.getClassLoader().getResourceAsStream(LOG_FILE));
@@ -92,5 +99,9 @@ public class JChessApp extends SingleFrameApplication
         {
             System.err.println("Logging not enabled : " + e.getMessage());
         }
+    }
+    
+    private static boolean isMac() {
+        return System.getProperty(OS_NAME).contains(MAC);
     }
 }
