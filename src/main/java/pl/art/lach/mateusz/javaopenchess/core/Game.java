@@ -330,7 +330,7 @@ public class Game extends JPanel implements ComponentListener, MouseListener {
         } else {
             activePlayer = getSettings().getPlayerWhite();
         }
-        this.getGameClock().switchClocks();
+        this.getGameClock().switchActiveClock();
     }
 
     /**

@@ -12,18 +12,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author Mateusz Slawomir Lach (matlak, msl)
- */
 package pl.art.lach.mateusz.javaopenchess.core.moves;
 
 import pl.art.lach.mateusz.javaopenchess.core.Chessboard;
+
 import pl.art.lach.mateusz.javaopenchess.core.pieces.Piece;
 import pl.art.lach.mateusz.javaopenchess.core.Square;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.implementation.King;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.implementation.Pawn;
 
+/**
+ * @author Mateusz Slawomir Lach (matlak, msl)
+ */
 public class Move
 {
     protected Square from = null;
@@ -40,18 +40,18 @@ public class Move
     
     protected Castling castlingMove = Castling.NONE;
     
-    protected boolean wasPawnTwoFieldsMove = false;
+    protected boolean wasPawnMovedTwoSquares = false;
     
     public Move(Square from, Square to, Piece movedPiece, Piece takenPiece, Piece promotedPiece)
     {
         this(from, to, movedPiece, takenPiece, Castling.NONE, false, promotedPiece);
-        if (King.class == movedPiece.getClass()) 
+        if (King.class == movedPiece.getClass())
         {
-            this.castlingMove = King.getCastling(from, to);
+            castlingMove = King.getCastling(from, to);
         }
         if (Pawn.class == movedPiece.getClass())
         {
-            this.wasEnPassant = Pawn.wasEnPassant(from, to);
+            wasEnPassant = Pawn.wasEnPassant(from, to);
         }
     }
 
@@ -67,16 +67,24 @@ public class Move
         this.castlingMove = castlingMove;
         this.wasEnPassant = wasEnPassant;
 
-        if (Pawn.class == movedPiece.getClass() 
-                && Math.abs(to.getPozY() - from.getPozY()) == 2)
+        if (wasPawnMovedTwoSquares(from, to, movedPiece))
         {
-            this.wasPawnTwoFieldsMove = true;
+            this.wasPawnMovedTwoSquares = true;
         }
-        else if (Pawn.class == movedPiece.getClass() && to.getPozY() == Chessboard.BOTTOM
-                || to.getPozY() == Chessboard.TOP && promotedPiece != null)
+        else if (shouldBePromoted(to, movedPiece, promotedPiece))
         {
             this.promotedTo = promotedPiece;
         }
+    }
+
+    private boolean wasPawnMovedTwoSquares(Square from, Square to, Piece movedPiece) {
+        return Pawn.class == movedPiece.getClass() 
+                && Math.abs(to.getPozY() - from.getPozY()) == 2;
+    }
+
+    private boolean shouldBePromoted(Square to, Piece movedPiece, Piece promotedPiece) {
+        return Pawn.class == movedPiece.getClass() && to.getPozY() == Chessboard.BOTTOM
+                || to.getPozY() == Chessboard.TOP && promotedPiece != null;
     }
 
     public Square getFrom()
@@ -106,7 +114,7 @@ public class Move
 
     public boolean wasPawnTwoFieldsMove()
     {
-        return this.wasPawnTwoFieldsMove;
+        return this.wasPawnMovedTwoSquares;
     }
 
     public Castling getCastlingMove()

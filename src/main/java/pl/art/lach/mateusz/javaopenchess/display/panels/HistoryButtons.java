@@ -60,36 +60,36 @@ public class HistoryButtons extends JPanel
     {
         this.setLayout(null);
         initButton(this.undoAllButton, UNDO_ALL, new Point(0, 0))
-        .addActionListener((evt) -> {
-            if (null != game)
-            {
-                while (game.undo());
-            }
-        });
+            .addActionListener((evt) -> {
+                if (null != game)
+                {
+                    while (game.undo());
+                }
+            });
         
         initButton(this.undoButton, UNDO, new Point(45, 0))
-        .addActionListener((evt) -> {
-            if (null != game)
-            {
-                game.undo();
-            }
-        });
+            .addActionListener((evt) -> {
+                if (null != game)
+                {
+                    game.undo();
+                }
+            });
 
         initButton(this.redoButton, REDO, new Point(90, 0))
-        .addActionListener((evt) -> {
-            if (null != game)
-            {
-                game.redo();
-            }
-        });
+            .addActionListener((evt) -> {
+                if (null != game)
+                {
+                    game.redo();
+                }
+            });
 
         initButton(this.redoAllButton, REDO_ALL, new Point(135, 0))
-        .addActionListener((evt) -> {
-            if (null != game)
-            {
-                while (game.redo());
-            }
-        });
+            .addActionListener((evt) -> {
+                if (null != game)
+                {
+                    while (game.redo());
+                }
+            });
     }
 
     private JButton initButton(JButton button, String buttonText, Point location)

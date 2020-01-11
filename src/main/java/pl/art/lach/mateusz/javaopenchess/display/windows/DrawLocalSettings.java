@@ -45,6 +45,8 @@ import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
 public class DrawLocalSettings extends JPanel implements ActionListener, TextListener
 {
 
+    private static final int MAX_NAME_LENGTH = 8;
+
     private static final int SECONDS_IN_ONE_MINUTE = 60;
 
     private static final long serialVersionUID = 1L;
@@ -84,25 +86,25 @@ public class DrawLocalSettings extends JPanel implements ActionListener, TextLis
     @Override
     public void textValueChanged(TextEvent e)
     {
-        Object target = e.getSource();
-        if (target == this.firstName || target == this.secondName)
+        Object source = e.getSource();
+        if (isNameField(source))
         {
             JTextField temp = new JTextField();
-            if (target == this.firstName)
+            if (source == firstName)
             {
-                temp = this.firstName;
+                temp = firstName;
             }
-            else if (target == this.secondName)
+            else if (source == secondName)
             {
-                temp = this.secondName;
+                temp = secondName;
             }
 
             int len = temp.getText().length();
-            if (len > 8)
+            if (len > MAX_NAME_LENGTH)
             {
                 try
                 {
-                    temp.setText(temp.getText(0, 7));
+                    temp.setText(temp.getText(0, MAX_NAME_LENGTH - 1));
                 }
                 catch (BadLocationException exc)
                 {
@@ -112,6 +114,10 @@ public class DrawLocalSettings extends JPanel implements ActionListener, TextLis
                 }
             }
         }
+    }
+
+    private boolean isNameField(Object target) {
+        return target == firstName || target == secondName;
     }
 
     /** Method responsible for changing the options which can make a player
@@ -244,8 +250,9 @@ public class DrawLocalSettings extends JPanel implements ActionListener, TextLis
 
     private boolean shouldDoComputerMove(Game activeGame)
     {
-        return activeGame.getSettings().isGameVersusComputer()
-                && activeGame.getSettings().getPlayerWhite().getPlayerType() == PlayerType.COMPUTER;
+        Settings settings = activeGame.getSettings();
+        return settings.isGameVersusComputer()
+                && settings.getPlayerWhite().getPlayerType() == PlayerType.COMPUTER;
     }
 
     public DrawLocalSettings(JDialog parent)
@@ -403,9 +410,9 @@ public class DrawLocalSettings extends JPanel implements ActionListener, TextLis
 
     private final void initOponentChoose()
     {
-        this.oponentChoose = new ButtonGroup();
-        this.oponentChoose.add(oponentComp);
-        this.oponentChoose.add(oponentHuman);
+        oponentChoose = new ButtonGroup();
+        oponentChoose.add(oponentComp);
+        oponentChoose.add(oponentHuman);
     }
 
     /**

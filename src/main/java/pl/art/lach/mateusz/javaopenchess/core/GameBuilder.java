@@ -14,6 +14,7 @@
  */
 package pl.art.lach.mateusz.javaopenchess.core;
 
+import pl.art.lach.mateusz.javaopenchess.core.players.Player;
 import pl.art.lach.mateusz.javaopenchess.core.players.PlayerType;
 import pl.art.lach.mateusz.javaopenchess.display.views.chessboard.implementation.graphic2D.Chessboard2D;
 import pl.art.lach.mateusz.javaopenchess.utils.GameModes;
@@ -21,80 +22,80 @@ import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
 import pl.art.lach.mateusz.javaopenchess.utils.Settings;
 
 /**
- * Game Builder
  * @author: Mateusz Slawomir Lach ( matlak, msl )
  */
 public class GameBuilder {
 
-  private Settings settings = new Settings();
-  
-  private boolean setPiecesForNewGame = true;
-  
-  private boolean isChatEnabled = false;
+    private Settings settings = new Settings();
 
-  private boolean uiVisible = true;
-  
-  public GameBuilder setWhitePlayerName(String whitePlayerName) {
-    settings.getPlayerWhite().setName(whitePlayerName);
-    return this;
-  }
-  
-  public GameBuilder setBlackPlayerName(String blackPlayerName) {
-    settings.getPlayerBlack().setName(blackPlayerName);
-    return this;
-  }
-  
-  public GameBuilder setBlackPlayerType(PlayerType playerType) {
-    settings.getPlayerBlack().setType(playerType);
-    return this;
-  }
-  
-  public GameBuilder setWhitePlayerType(PlayerType playerType) {
-    settings.getPlayerWhite().setType(playerType);
-    return this;
-  }
-  
-  public GameBuilder setGameMode(GameModes mode) { 
-    settings.setGameMode(mode);
-    return this;
-  }
-  
-  public GameBuilder setGameType(GameTypes type) {
-    settings.setGameType(type);
-    return this;
-  }
-  
-  public GameBuilder setCreateUi(boolean uiVisible) {
-      return setUiVisible(uiVisible);
-  }
-  
-  public GameBuilder setUiVisible(boolean uiVisible) {
-    this.uiVisible = uiVisible;
-    return this;
-  }
-  
-  public GameBuilder setPiecesForNewGame(boolean setPiecesForNewGame) {
-    this.setPiecesForNewGame = setPiecesForNewGame;
-    return this;
-  }
-  
-  public GameBuilder setChatEnabled(boolean isChatEnabled) {
-    this.isChatEnabled = isChatEnabled;
-    return this;
-  }
-  
-  public Game build() {
-    Game game = new Game();
-    if (setPiecesForNewGame) {
-      game.getChessboard().setPieces4NewGame(settings.getPlayerWhite(), settings.getPlayerBlack());
+    private boolean setPiecesForNewGame = true;
+
+    private boolean isChatEnabled = false;
+
+    private boolean uiVisible = true;
+
+    public GameBuilder setWhitePlayerName(String whitePlayerName) {
+        settings.getPlayerWhite().setName(whitePlayerName);
+        return this;
     }
-    game.getChat().setEnabled(isChatEnabled);
-    game.setSettings(settings);
-    game.setActivePlayer(settings.getPlayerWhite());
-    if (uiVisible)
-    {
-        game.setChessboardView(new Chessboard2D(game));
+
+    public GameBuilder setBlackPlayerName(String blackPlayerName) {
+        settings.getPlayerBlack().setName(blackPlayerName);
+        return this;
     }
-    return game;
-  }
+
+    public GameBuilder setBlackPlayerType(PlayerType playerType) {
+        settings.getPlayerBlack().setType(playerType);
+        return this;
+    }
+
+    public GameBuilder setWhitePlayerType(PlayerType playerType) {
+        settings.getPlayerWhite().setType(playerType);
+        return this;
+    }
+
+    public GameBuilder setGameMode(GameModes mode) {
+        settings.setGameMode(mode);
+        return this;
+    }
+
+    public GameBuilder setGameType(GameTypes type) {
+        settings.setGameType(type);
+        return this;
+    }
+
+    public GameBuilder setCreateUi(boolean uiVisible) {
+        return setUiVisible(uiVisible);
+    }
+
+    public GameBuilder setUiVisible(boolean uiVisible) {
+        this.uiVisible = uiVisible;
+        return this;
+    }
+
+    public GameBuilder setPiecesForNewGame(boolean setPiecesForNewGame) {
+        this.setPiecesForNewGame = setPiecesForNewGame;
+        return this;
+    }
+
+    public GameBuilder setChatEnabled(boolean isChatEnabled) {
+        this.isChatEnabled = isChatEnabled;
+        return this;
+    }
+
+    public Game build() {
+        Game game = new Game();
+        if (setPiecesForNewGame) {
+            Player whitePlayer = settings.getPlayerWhite();
+            Player blackPlayer = settings.getPlayerBlack();
+            game.getChessboard().setPieces4NewGame(whitePlayer, blackPlayer);
+        }
+        game.getChat().setEnabled(isChatEnabled);
+        game.setSettings(settings);
+        game.setActivePlayer(settings.getPlayerWhite());
+        if (uiVisible) {
+            game.setChessboardView(new Chessboard2D(game));
+        }
+        return game;
+    }
 }
