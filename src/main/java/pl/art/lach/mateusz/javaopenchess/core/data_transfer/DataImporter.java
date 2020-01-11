@@ -19,11 +19,12 @@ import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
 
 /**
  * Interface to implement data import from different notations.
+ * 
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public interface DataImporter
-{
-    Game importData(String data) throws ReadGameError;
+public interface DataImporter {
     
+    Game importData(String data) throws ReadGameError;
+
     void importData(String data, Game game) throws ReadGameError;
 }

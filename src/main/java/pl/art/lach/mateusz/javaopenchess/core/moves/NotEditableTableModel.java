@@ -16,24 +16,21 @@ package pl.art.lach.mateusz.javaopenchess.core.moves;
 
 import javax.swing.table.DefaultTableModel;
 
-/*
+/**
  * Overriding DefaultTableModel and  isCellEditable method
  * (history cannot be edited by player)
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-class NotEditableTableModel extends DefaultTableModel
-{
+class NotEditableTableModel extends DefaultTableModel {
 
     private static final long serialVersionUID = 1L;
 
-    NotEditableTableModel()
-    {
+    NotEditableTableModel() {
         super();
     }
 
     @Override
-    public boolean isCellEditable(int a, int b)
-    {
+    public boolean isCellEditable(int a, int b) {
         return false;
     }
 }

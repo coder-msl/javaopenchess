@@ -19,23 +19,17 @@ package pl.art.lach.mateusz.javaopenchess.core.helpers;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.Piece;
 
 /**
- *
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public enum Pieces
-{
+public enum Pieces {
     INSTANCE;
-    
-    public boolean isSameType(Piece firstPiece, Piece secondPiece)
-    {
-        return firstPiece != null 
-            && secondPiece != null
-            && firstPiece.getName().equals(secondPiece.getClass().getSimpleName());
+
+    public boolean isSameType(Piece firstPiece, Piece secondPiece) {
+        return firstPiece != null && secondPiece != null
+                && firstPiece.getName().equals(secondPiece.getClass().getSimpleName());
     }
-    
-    public boolean isSameClass(Piece piece, Class<?> clazz)
-    {
-        return null != piece
-            && piece.getClass().getSimpleName().equals(clazz.getSimpleName());
+
+    public boolean isSameClass(Piece piece, Class<?> clazz) {
+        return null != piece && piece.getClass().getSimpleName().equals(clazz.getSimpleName());
     }
 }

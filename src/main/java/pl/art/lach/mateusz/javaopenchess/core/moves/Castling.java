@@ -19,40 +19,36 @@ import pl.art.lach.mateusz.javaopenchess.core.Colors;
 /**
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public enum Castling
-{
-    NONE("", new int[4], new int[4]), 
+public enum Castling {
     
-    SHORT_CASTLING("0-0", new int[] {4, 7, 6, 7}, new int[] {4, 0, 6, 0}),
-    
-    LONG_CASTLING("0-0-0", new int[] { 4, 7, 2, 7}, new int[] {4, 0, 2, 0});
-    
+    NONE("", new int[4], new int[4]),
+
+    SHORT_CASTLING("0-0", new int[] { 4, 7, 6, 7 }, new int[] { 4, 0, 6, 0 }),
+
+    LONG_CASTLING("0-0-0", new int[] { 4, 7, 2, 7 }, new int[] { 4, 0, 2, 0 });
+
     protected String symbol;
-    
+
     protected int[] whiteMove;
-    
+
     protected int[] blackMove;
-    
-    Castling(String symbol, int[] whiteMove, int[] blackMove)
-    {
+
+    Castling(String symbol, int[] whiteMove, int[] blackMove) {
         this.symbol = symbol;
         this.whiteMove = whiteMove;
         this.blackMove = blackMove;
     }
-    
-    public String getSymbol()
-    {
+
+    public String getSymbol() {
         return symbol;
     }
-    
-    public int[] getMove(Colors color)
-    {
+
+    public int[] getMove(Colors color) {
         return Colors.BLACK == color ? blackMove : whiteMove;
     }
-    
-    public static boolean isCastling(String moveInPGN)
-    {
-        return moveInPGN.equals(Castling.SHORT_CASTLING.getSymbol()) 
+
+    public static boolean isCastling(String moveInPGN) {
+        return moveInPGN.equals(Castling.SHORT_CASTLING.getSymbol())
                 || moveInPGN.equals(Castling.LONG_CASTLING.getSymbol());
     }
 }

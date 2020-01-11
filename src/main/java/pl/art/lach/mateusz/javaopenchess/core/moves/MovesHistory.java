@@ -254,31 +254,25 @@ public class MovesHistory extends AbstractTableModel {
     }
 
     private boolean isBlackOrWhiteKingCheckmatedOrStalemated() {
-        return (!this.enterBlack && this.game.getChessboard().getKingBlack().getKingState() == KingState.CHECKMATED)
-                || (this.enterBlack && this.game.getChessboard().getKingWhite().getKingState() == KingState.CHECKMATED);
+        return (!enterBlack && game.getChessboard().getKingBlack().getKingState() == KingState.CHECKMATED)
+                || (enterBlack && game.getChessboard().getKingWhite().getKingState() == KingState.CHECKMATED);
     }
 
     private boolean isBlackOrWhiteKingCheck() {
-        return (!this.enterBlack && this.game.getChessboard().getKingBlack().isChecked())
-                || (this.enterBlack && this.game.getChessboard().getKingWhite().isChecked());
+        return (!enterBlack && game.getChessboard().getKingBlack().isChecked())
+                || (enterBlack && game.getChessboard().getKingWhite().isChecked());
     }
 
     private String addMoveHandleNormalSetup(String locMove, Square begin) {
-        locMove += Character.toString((char) (begin.getPozX() + CHAR_TINY_A_ASCII));// add letter of Square from which
-                                                                                    // moves was made
-        locMove += Integer.toString(Chessboard.NUMBER_OF_SQUARES - begin.getPozY());// add number of Square from which
-                                                                                    // moves was made
-        return locMove;
+        String letter = Character.toString((char) (begin.getPozX() + CHAR_TINY_A_ASCII));
+        String number = Integer.toString(Chessboard.NUMBER_OF_SQUARES - begin.getPozY());
+        return locMove + letter + number;
     }
 
     private String addMoveHandleUpsideDown(String locMove, Square begin) {
-        locMove += Character.toString((char) ((Chessboard.BOTTOM - begin.getPozX()) + CHAR_TINY_A_ASCII));// add letter
-                                                                                                          // of Square
-                                                                                                          // from which
-                                                                                                          // moves was
-                                                                                                          // made
-        locMove += Integer.toString(begin.getPozY() + 1);// add number of Square from which moves was made
-        return locMove;
+        String letter = Character.toString((char) ((Chessboard.BOTTOM - begin.getPozX()) + CHAR_TINY_A_ASCII));
+        String number = locMove += Integer.toString(begin.getPozY() + 1);
+        return locMove + letter + number;
     }
 
     public void clearMoveForwardStack() {
@@ -372,13 +366,13 @@ public class MovesHistory extends AbstractTableModel {
             int sign = move.charAt(from);// get First
             switch (sign) // if sign of piece, get next
             {
-            case CHAR_B_ASCII:
-            case CHAR_K_ASCII:
-            case CHAR_N_ASCII:
-            case CHAR_Q_ASCII:
-            case CHAR_R_ASCII:
-                from = 1;
-                break;
+                case CHAR_B_ASCII:
+                case CHAR_K_ASCII:
+                case CHAR_N_ASCII:
+                case CHAR_Q_ASCII:
+                case CHAR_R_ASCII:
+                    from = 1;
+                    break;
             }
             sign = move.charAt(from);
             LOG.debug("isMoveCorrect/sign: " + sign);
@@ -411,12 +405,12 @@ public class MovesHistory extends AbstractTableModel {
             LOG.error("isMoveCorrect/StringIndexOutOfBoundsException: ", exc);
             return false;
         }
-
         return true;
     }
 
     private static boolean isCastling(String move) {
-        return move.equals(Castling.SHORT_CASTLING.getSymbol()) || move.equals(Castling.LONG_CASTLING.getSymbol());
+        return move.equals(Castling.SHORT_CASTLING.getSymbol()) 
+                || move.equals(Castling.LONG_CASTLING.getSymbol());
     }
 
     public void addMoves(ArrayList<String> list) {

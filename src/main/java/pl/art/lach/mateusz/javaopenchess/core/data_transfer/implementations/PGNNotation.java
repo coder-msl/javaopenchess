@@ -36,6 +36,8 @@ import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
 public class PGNNotation implements DataImporter, DataExporter
 {
     
+    private static final String HEADLINE = "[Event \"Game\"]\n[Date \"%s.%s.%s\"]\n[White \"%s\"]\n[Black \"%s\"]\n\n";
+
     private static final Logger LOG = Logger.getLogger(Game.class);
     
     private static final String BLACK_COLOR_INTRO = "[Black";
@@ -100,14 +102,19 @@ public class PGNNotation implements DataImporter, DataExporter
         Calendar cal = Calendar.getInstance();
         Settings sett = game.getSettings();
         StringBuilder strBuilder = new StringBuilder();
-        String header = String.format(
-            "[Event \"Game\"]\n[Date \"%s.%s.%s\"]\n[White \"%s\"]\n[Black \"%s\"]\n\n",
-            cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH),
-            sett.getPlayerWhite().getName(), sett.getPlayerBlack().getName()
-        );
+        String header = getFormattedHeader(cal, sett); 
         strBuilder.append(header);
         strBuilder.append(game.getMoves().getMovesInString());
         return strBuilder.toString();
+    }
+
+    private String getFormattedHeader(Calendar cal, Settings sett) {
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        String whiteName = sett.getPlayerWhite().getName();
+        String blackName = sett.getPlayerBlack().getName();
+        return String.format(HEADLINE, year, month, day, whiteName, blackName);
     }
 
     /** Method checking in with of line there is an error

@@ -394,10 +394,8 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
                 catch (IOException exc)
                 {
                     LOG.error(exc);
-                    JOptionPane.showMessageDialog(
-                        null,
-                        Settings.lang("error_writing_to_file") + ": " + exc
-                    );
+                    String message = Settings.lang("error_writing_to_file");
+                    JOptionPane.showMessageDialog(null, message + ": " + exc);
                 }
                 catch (ReadGameError exc)
                 {
@@ -407,10 +405,7 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
                 catch (IllegalArgumentException exc)
                 {
                     LOG.error(exc);
-                    JOptionPane.showMessageDialog(
-                        null,
-                        Settings.lang("unknown_format")
-                    );
+                    JOptionPane.showMessageDialog(null, Settings.lang("unknown_format"));
                 }
             }
         }
@@ -433,17 +428,11 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
         JFileChooser fc = new JFileChooser();
         FileFilter pgnFilter = new FileNameExtensionFilter(
             Settings.lang("pgn_file"),
-            new String[]
-            {
-                "pgn"
-            }
+            new String[] {"pgn"}
         );
         FileFilter fenFilter = new FileNameExtensionFilter(
             Settings.lang("fen_file"),
-            new String[]
-            {
-                "fen"
-            }
+            new String[]{"fen"}
         );
         fc.setFileFilter(fenFilter);
         fc.setFileFilter(pgnFilter);
