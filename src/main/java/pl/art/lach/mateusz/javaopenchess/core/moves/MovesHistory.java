@@ -47,6 +47,10 @@ import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
 //TODO: REFACTOR HERE!!
 public class MovesHistory extends AbstractTableModel {
 
+    private static final int ASCII_BIG_LETTER_END_INDEX = 90;
+
+    private static final int ASCII_BIG_LETTER_START_INDEX = 65;
+
     private static final String DOT = ".";
 
     private static final String SPACE = " ";
@@ -357,7 +361,7 @@ public class MovesHistory extends AbstractTableModel {
         }
     }
 
-    static public boolean isPgnStringMoveSyntaxValid(String move) {
+    public static boolean isPgnStringMoveSyntaxValid(String move) {
         if (isCastling(move)) {
             return true;
         }
@@ -366,13 +370,13 @@ public class MovesHistory extends AbstractTableModel {
             int sign = move.charAt(from);// get First
             switch (sign) // if sign of piece, get next
             {
-                case CHAR_B_ASCII:
-                case CHAR_K_ASCII:
-                case CHAR_N_ASCII:
-                case CHAR_Q_ASCII:
-                case CHAR_R_ASCII:
-                    from = 1;
-                    break;
+            case CHAR_B_ASCII:
+            case CHAR_K_ASCII:
+            case CHAR_N_ASCII:
+            case CHAR_Q_ASCII:
+            case CHAR_R_ASCII:
+                from = 1;
+                break;
             }
             sign = move.charAt(from);
             LOG.debug("isMoveCorrect/sign: " + sign);
@@ -383,29 +387,34 @@ public class MovesHistory extends AbstractTableModel {
             if (sign < CHAR_1 || sign > CHAR_8) {
                 return false;
             }
-            if (move.length() > 3) // if is equal to 3 or lower, than it's in short notation, no more checking
-                                   // needed
-            {
-                sign = move.charAt(from + 2);
-                if (sign != CHAR_HYPHEN_ASCII && sign != CHAR_TINY_X_ASCII) // if isn't '-' and 'x'
-                {
-                    return false;
-                }
-                sign = move.charAt(from + 3);
-                if (sign < CHAR_TINY_A_ASCII || sign > CHAR_TINY_H_ASCII) // if lower than 'a' or higher than 'h'
-                {
-                    return false;
-                }
-                sign = move.charAt(from + 4);
-                if (sign < CHAR_1 || sign > CHAR_8) {
-                    return false;
-                }
+            if (isLongNotation(move) && !isLongNotationValid(sign, from, move)) {
+                return false;
             }
         } catch (StringIndexOutOfBoundsException exc) {
             LOG.error("isMoveCorrect/StringIndexOutOfBoundsException: ", exc);
             return false;
         }
         return true;
+    }
+
+    private static boolean isLongNotationValid(int sign, int from, String move) {
+        sign = move.charAt(from + 2);
+        if (sign != CHAR_HYPHEN_ASCII && sign != CHAR_TINY_X_ASCII) {
+            return false;
+        }
+        sign = move.charAt(from + 3);
+        if (sign < CHAR_TINY_A_ASCII || sign > CHAR_TINY_H_ASCII) {
+            return false;
+        }
+        sign = move.charAt(from + 4);
+        if (sign < CHAR_1 || sign > CHAR_8) {
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean isLongNotation(String move) {
+        return move.length() > 3;
     }
 
     private static boolean isCastling(String move) {
@@ -416,7 +425,7 @@ public class MovesHistory extends AbstractTableModel {
     public void addMoves(ArrayList<String> list) {
         for (String singleMove : list) {
             if (isPgnStringMoveSyntaxValid(singleMove)) {
-                this.addMove(singleMove);
+                addMove(singleMove);
             }
         }
     }
@@ -430,7 +439,7 @@ public class MovesHistory extends AbstractTableModel {
         int n = 1;
         int i = 0;
         String str = new String();
-        for (String locMove : this.getMoves()) {
+        for (String locMove : getMoves()) {
             if (i % 2 == 0) {
                 str += n + ". ";
                 n += 1;
@@ -497,7 +506,7 @@ public class MovesHistory extends AbstractTableModel {
             }
             from = 0;
             int num = move.charAt(from);
-            if (num <= 90 && num >= 65) {
+            if (isBigLetter(num)) {
                 from = 1;
             }
             int xFrom = 9; // set to higher value than chessboard has fields, to cause error if piece won't
@@ -506,7 +515,7 @@ public class MovesHistory extends AbstractTableModel {
             int xTo = 9;
             int yTo = 9;
             boolean pieceFound = false;
-            if (move.length() <= 3) {
+            if (!isLongNotation(move)) {
                 Square[][] squares = game.getChessboard().getSquares();
                 xTo = move.charAt(from) - CHAR_TINY_A_ASCII;
                 yTo = Chessboard.BOTTOM - (move.charAt(from + 1) - 49);
@@ -534,19 +543,26 @@ public class MovesHistory extends AbstractTableModel {
                 xTo = move.charAt(from + 3) - CHAR_TINY_A_ASCII;// from ASCII
                 yTo = Chessboard.BOTTOM - (move.charAt(from + 4) - 49);// from ASCII
             }
-            canMove = this.game.simulateMove(xFrom, yFrom, xTo, yTo, null);
+            canMove = game.simulateMove(xFrom, yFrom, xTo, yTo, null);
             if (!canMove) {
-                this.game.getChessboard().resetActiveSquare();
+                game.getChessboard().resetActiveSquare();
                 throw new ReadGameError(String.format(Settings.lang("illegal_move_on"), move), move);
             }
         }
     }
 
-    private boolean isPieceNullOrDifferentColor(Piece piece, Colors activePlayerColor) {
-        return null == piece || activePlayerColor != piece.getPlayer().getColor();
+    private boolean isBigLetter(int num) {
+        return num >= ASCII_BIG_LETTER_START_INDEX 
+                && num <= ASCII_BIG_LETTER_END_INDEX;
     }
 
-    //TODO: refactor this crap. It returns true if move is possible and trhows exception if not. 
+    private boolean isPieceNullOrDifferentColor(Piece piece, Colors activePlayerColor) {
+        return null == piece 
+                || activePlayerColor != piece.getPlayer().getColor();
+    }
+
+    // TODO: refactor this crap. It returns true if move is possible and trhows
+    // exception if not.
     private boolean processCastling(String move) throws ReadGameError {
         boolean canMove;
         int[] values = new int[4];
