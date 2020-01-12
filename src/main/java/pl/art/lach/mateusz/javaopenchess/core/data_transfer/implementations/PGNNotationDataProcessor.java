@@ -18,91 +18,89 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Calendar;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import pl.art.lach.mateusz.javaopenchess.core.Game;
 import pl.art.lach.mateusz.javaopenchess.core.GameBuilder;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataExporter;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataImporter;
+import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataSytaxParser;
+import pl.art.lach.mateusz.javaopenchess.core.data_transfer.tokenizers.PGNTokens;
+import pl.art.lach.mateusz.javaopenchess.core.data_transfer.tokenizers.Token;
+import pl.art.lach.mateusz.javaopenchess.core.data_transfer.tokenizers.Tokenizer;
 import pl.art.lach.mateusz.javaopenchess.core.players.PlayerType;
 import pl.art.lach.mateusz.javaopenchess.utils.GameModes;
 import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
 import pl.art.lach.mateusz.javaopenchess.utils.Settings;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
+import pl.art.lach.mateusz.javaopenchess.core.exceptions.DataSyntaxException;
+import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
 
 /**
- *
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public class PGNNotation implements DataImporter, DataExporter
-{
+public class PGNNotationDataProcessor implements DataImporter, DataExporter, DataSytaxParser {
     
     private static final String HEADLINE = "[Event \"Game\"]\n[Date \"%s.%s.%s\"]\n[White \"%s\"]\n[Black \"%s\"]\n\n";
 
     private static final Logger LOG = Logger.getLogger(Game.class);
-    
+
     private static final String BLACK_COLOR_INTRO = "[Black";
-    
-    private static final String WHITE_COLOR_INTRO = "[White";    
-    
+
+    private static final String WHITE_COLOR_INTRO = "[White";
+
     private static final String START_MOVES_LINE_INTRO = "1.";
 
     @Override
-    public Game importData(String data) throws ReadGameError
-    {
+    public Game importData(String data) throws GameReadException {
         String tempStr;
         String blackName;
         String whiteName;
         BufferedReader br = new BufferedReader(new StringReader(data));
-        try
-        {
-            //TODO: REFACTOR
+        try {
+            // TODO: REFACTOR
             tempStr = getLineWithVar(br, WHITE_COLOR_INTRO);
             whiteName = getValue(tempStr);
             tempStr = getLineWithVar(br, BLACK_COLOR_INTRO);
             blackName = getValue(tempStr);
             tempStr = getLineWithVar(br, START_MOVES_LINE_INTRO);
-        }
-        catch (ReadGameError err)
-        {
+        } catch (GameReadException err) {
             LOG.error("Error reading file: " + err);
             return null;
         }
-        Game game =  new GameBuilder()
-          .setBlackPlayerName(blackName)
-          .setWhitePlayerName(whiteName)
-          .setWhitePlayerType(PlayerType.LOCAL_USER)
-          .setBlackPlayerType(PlayerType.LOCAL_USER)
-          .setGameMode(GameModes.LOAD_GAME)
-          .setGameType(GameTypes.LOCAL)
-          .setPiecesForNewGame(true)
-          .setPiecesForNewGame(false)
-          .build();
-        
+        Game game = new GameBuilder()
+                .setBlackPlayerName(blackName)
+                .setWhitePlayerName(whiteName)
+                .setWhitePlayerType(PlayerType.LOCAL_USER)
+                .setBlackPlayerType(PlayerType.LOCAL_USER)
+                .setGameMode(GameModes.LOAD_GAME)
+                .setGameType(GameTypes.LOCAL)
+                .setPiecesForNewGame(true)
+                .setPiecesForNewGame(false)
+                .build();
+
         importData(tempStr, game);
         game.getChessboard().repaint();
         return game;
     }
 
     @Override
-    public void importData(String data, Game game) throws ReadGameError
-    {
+    public void importData(String data, Game game) throws GameReadException {
         game.setBlockedChessboard(true);
         importData(new BufferedReader(new StringReader(data)), game);
         game.setBlockedChessboard(false);
     }
-    
-    private void importData(BufferedReader br, Game game) throws ReadGameError
-    {
+
+    private void importData(BufferedReader br, Game game) throws GameReadException {
         game.getMoves().setMoves(getLineWithVar(br, START_MOVES_LINE_INTRO));
     }
 
     @Override
-    public String exportData(Game game)
-    {
+    public String exportData(Game game) {
         Calendar cal = Calendar.getInstance();
         Settings sett = game.getSettings();
         StringBuilder strBuilder = new StringBuilder();
-        String header = getFormattedHeader(cal, sett); 
+        String header = getFormattedHeader(cal, sett);
         strBuilder.append(header);
         strBuilder.append(game.getMoves().getMovesInString());
         return strBuilder.toString();
@@ -117,62 +115,70 @@ public class PGNNotation implements DataImporter, DataExporter
         return String.format(HEADLINE, year, month, day, whiteName, blackName);
     }
 
-    /** Method checking in with of line there is an error
-     *  @param  br BufferedReader class object to operate on
-     *  @param  srcStr String class object with text which variable you want to get in file
-     *  @return String with searched variable in file (whole line)
-     *  @throws ReadGameError class object when something goes wrong when reading file
+    /**
+     * Method checking in with of line there is an error
+     * 
+     * @param br     BufferedReader class object to operate on
+     * @param srcStr String class object with text which variable you want to get in
+     *               file
+     * @return String with searched variable in file (whole line)
+     * @throws GameReadException class object when something goes wrong when reading
+     *                           file
      */
-    static private String getLineWithVar(BufferedReader br, String srcStr) throws ReadGameError
-    {
+    private static String getLineWithVar(BufferedReader br, String srcStr) throws GameReadException {
         String str = new String();
-        while (true)
-        {
-            try
-            {
+        while (true) {
+            try {
                 str = br.readLine();
-            }
-            catch (IOException exc)
-            {
+            } catch (IOException exc) {
                 LOG.error("Something wrong reading file: ", exc);
-                throw new ReadGameError("Something wrong reading file: " + exc);
+                throw new GameReadException("Something wrong reading file: " + exc);
             }
-            if (str == null)
-            {
+            if (str == null) {
                 LOG.error("Something wrong reading file, str == null.");
-                throw new ReadGameError("Something wrong reading file, str == null.");
+                throw new GameReadException("Something wrong reading file, str == null.");
             }
-            if (str.startsWith(srcStr))
-            {
+            if (str.startsWith(srcStr)) {
                 return str;
             }
         }
     }
 
-    /** Method to get value from loaded txt line in PGN notation
-     *  @param line Line which is readed
-     *  @return result String with loaded value
-     *  @throws ReadGameError object class when something goes wrong
+    /**
+     * Method to get value from loaded txt line in PGN notation
+     * 
+     * @param line Line which is readed
+     * @return result String with loaded value
+     * @throws GameReadException object class when something goes wrong
      */
-    static private String getValue(String line) throws ReadGameError
-    {
+    private static String getValue(String line) throws GameReadException {
         int from = line.indexOf("\"");
         int to = line.lastIndexOf("\"");
         int size = line.length() - 1;
         String result;
-        if (to < from || from > size || to > size || to < 0 || from < 0)
-        {
-            throw new ReadGameError("Error reading value from PGN header section.");
+        if (isInvalidRange(from, to, size)) {
+            throw new GameReadException("Error reading value from PGN header section.");
         }
-        try
-        {
+        try {
             result = line.substring(from + 1, to);
-        }
-        catch (StringIndexOutOfBoundsException exc)
-        {
+        } catch (StringIndexOutOfBoundsException exc) {
             LOG.error("error getting value: ", exc);
             return "none";
         }
         return result;
-    }    
+    }
+
+    private static boolean isInvalidRange(int from, int to, int size) {
+        return to < from || from > size || to > size || to < 0 || from < 0;
+    }
+
+    @Override
+    public List<Token> parse(String input) throws DataSyntaxException {
+        Tokenizer tokenizer = new Tokenizer();
+        tokenizer.add("\\[Event \".*\"\\]", PGNTokens.EVENT.ordinal());
+        tokenizer.add("\\[Date \"[0-9]+\\.[0-9]+\\.[0-9]+\"\\]", PGNTokens.DATE.ordinal());
+        tokenizer.add("\\[White \".*\"\\]", PGNTokens.WHITE_PLAYER.ordinal());
+        tokenizer.add("\\[Black \".*\"\\]", PGNTokens.BLACK_PLAYER.ordinal());
+        return tokenizer.parse(input);
+    }
 }

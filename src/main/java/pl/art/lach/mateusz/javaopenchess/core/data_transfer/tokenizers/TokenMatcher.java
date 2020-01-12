@@ -12,19 +12,30 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package pl.art.lach.mateusz.javaopenchess.core.data_transfer;
+package pl.art.lach.mateusz.javaopenchess.core.data_transfer.tokenizers;
 
-import pl.art.lach.mateusz.javaopenchess.core.Game;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
+import java.util.regex.Pattern;
 
 /**
- * Interface to implement data import from different notations.
- * 
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public interface DataImporter {
+class TokenMatcher {
     
-    Game importData(String data) throws GameReadException;
-
-    void importData(String data, Game game) throws GameReadException;
+    private final Pattern regexpPattern;
+    
+    private final int tokenNumber;
+    
+    public TokenMatcher(final Pattern regexpPattern, final int tokenNumber) {
+        this.regexpPattern = regexpPattern;
+        this.tokenNumber = tokenNumber;
+    }
+    
+    public Pattern getRegexpPattern() {
+        return regexpPattern;
+    }
+    
+    public int getTokenNumber() {
+        return tokenNumber;
+    }
+    
 }

@@ -15,33 +15,29 @@
 package pl.art.lach.mateusz.javaopenchess.core.data_transfer;
 
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.implementations.FenNotation;
-import pl.art.lach.mateusz.javaopenchess.core.data_transfer.implementations.PGNNotation;
+import pl.art.lach.mateusz.javaopenchess.core.data_transfer.implementations.PGNNotationDataProcessor;
 
 /**
  * Factory to create exporter/importer instances.
+ * 
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public class DataTransferFactory
-{
-    
-    public static DataExporter getExporterInstance(TransferFormat format)
-    {
-        switch (format)
-        {
+public class DataTransferFactory {
+
+    public static DataExporter getExporterInstance(TransferFormat format) {
+        switch (format) {
             case PGN:
-                return new PGNNotation();
+                return new PGNNotationDataProcessor();
             case FEN:
             default:
                 return new FenNotation();
         }
     }
-    
-    public static DataImporter getImporterInstance(TransferFormat format)
-    {
-        switch (format)
-        {
+
+    public static DataImporter getImporterInstance(TransferFormat format) {
+        switch (format) {
             case PGN:
-                return new PGNNotation();
+                return new PGNNotationDataProcessor();
             default:
             case FEN:
                 return new FenNotation();

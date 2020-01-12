@@ -22,7 +22,7 @@ import pl.art.lach.mateusz.javaopenchess.core.Square;
 import pl.art.lach.mateusz.javaopenchess.core.Squares;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataExporter;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataImporter;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
+import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.Piece;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.PieceFactory;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.implementation.King;
@@ -74,7 +74,7 @@ public class FenNotation implements DataImporter, DataExporter {
     private static final String SQUARE_PREFIX = "SQ_";
 
     @Override
-    public Game importData(String data) throws ReadGameError {
+    public Game importData(String data) throws GameReadException {
         Game game = new GameBuilder().setBlackPlayerName("--").setWhitePlayerName("--")
                 .setWhitePlayerType(PlayerType.LOCAL_USER).setBlackPlayerType(PlayerType.LOCAL_USER)
                 .setGameMode(GameModes.LOAD_GAME).setGameType(GameTypes.LOCAL).setPiecesForNewGame(true)
@@ -86,12 +86,12 @@ public class FenNotation implements DataImporter, DataExporter {
     }
 
     @Override
-    public void importData(String data, Game game) throws ReadGameError {
+    public void importData(String data, Game game) throws GameReadException {
         Chessboard chessboard = game.getChessboard();
         chessboard.clear();
         String[] fields = data.split(FIELD_SEPARATOR);
         if (NUMBER_OF_FIELDS != fields.length) {
-            throw new ReadGameError(
+            throw new GameReadException(
                 Settings.lang("invalid_fen_state"), 
                 Settings.lang("invalid_fen_number_of_fields")
             );
@@ -107,26 +107,26 @@ public class FenNotation implements DataImporter, DataExporter {
 
     private static final int NUMBER_OF_FIELDS = 6;
 
-    private void importCounters(String[] fields, Game game) throws ReadGameError {
+    private void importCounters(String[] fields, Game game) throws GameReadException {
         try {
             Integer halfCounter = Integer.parseInt(fields[HALF_COUNTER_STATE_NUM]);
             game.getChessboard().setHalfCounter(halfCounter);
             game.getChessboard().setFullMoveCounterAdd(Integer.parseInt(fields[FULL_COUNTER_STATE_NUM]));
         } catch (NumberFormatException exc) {
-            throw new ReadGameError(
+            throw new GameReadException(
                 Settings.lang("invalid_fen_state"), 
                 fields[HALF_COUNTER_STATE_NUM]
             );
         }
     }
 
-    private void importEnPassantState(String enPassantState, Chessboard chessboard, Game game) throws ReadGameError {
+    private void importEnPassantState(String enPassantState, Chessboard chessboard, Game game) throws GameReadException {
         if (!FIELD_EMPTY.equals(enPassantState) && enPassantState.length() == 2) {
             try {
                 Squares sqX = Squares.valueOf(SQUARE_PREFIX + enPassantState.substring(0, 1).toUpperCase());
                 Squares sqY = Squares.valueOf(SQUARE_PREFIX + enPassantState.substring(1, 2).toUpperCase());
                 if (null == sqY) {
-                    throw new ReadGameError(Settings.lang("invalid_fen_state"), enPassantState);
+                    throw new GameReadException(Settings.lang("invalid_fen_state"), enPassantState);
                 } else {
                     switch (sqY) {
                     case SQ_3:
@@ -136,7 +136,7 @@ public class FenNotation implements DataImporter, DataExporter {
                         sqY = Squares.SQ_6;
                         break;
                     default:
-                        throw new ReadGameError(Settings.lang("invalid_fen_state"), enPassantState);
+                        throw new GameReadException(Settings.lang("invalid_fen_state"), enPassantState);
                     }
                 }
                 Square sq = chessboard.getSquare(sqX, sqY);
@@ -145,12 +145,12 @@ public class FenNotation implements DataImporter, DataExporter {
                     game.getChessboard().setTwoSquareMovedPawn((Pawn) sq.getPiece());
                 }
             } catch (IllegalStateException exc) {
-                throw new ReadGameError(Settings.lang("invalid_fen_state"), enPassantState);
+                throw new GameReadException(Settings.lang("invalid_fen_state"), enPassantState);
             }
         }
     }
 
-    private void importCastlingState(String castlingState, Chessboard chessboard) throws ReadGameError {
+    private void importCastlingState(String castlingState, Chessboard chessboard) throws GameReadException {
         for (int i = 0, size = castlingState.length(); i < size; i++) {
             String state = castlingState.substring(i, (i + 1));
             if (!FIELD_EMPTY.equals(state)) {
@@ -179,7 +179,7 @@ public class FenNotation implements DataImporter, DataExporter {
         }
     }
 
-    private void setupCastlingState(Square kingSquare, Square rookSquare) throws ReadGameError {
+    private void setupCastlingState(Square kingSquare, Square rookSquare) throws GameReadException {
         King king;
         Rook rook;
         Piece piece = kingSquare.getPiece();
@@ -187,14 +187,14 @@ public class FenNotation implements DataImporter, DataExporter {
             king = (King) piece;
             king.setWasMotioned(false);
         } else {
-            throw new ReadGameError(Settings.lang("invalid_fen_state"));
+            throw new GameReadException(Settings.lang("invalid_fen_state"));
         }
         piece = rookSquare.getPiece();
         if (Rook.class == piece.getClass()) {
             rook = (Rook) piece;
             rook.setWasMotioned(false);
         } else {
-            throw new ReadGameError(Settings.lang("invalid_fen_state"));
+            throw new GameReadException(Settings.lang("invalid_fen_state"));
         }
     }
 
@@ -207,11 +207,11 @@ public class FenNotation implements DataImporter, DataExporter {
     }
 
     private void importPieces(String piecesStateString, Game game, Player whitePlayer, Player blackPlayer)
-            throws ReadGameError {
+            throws GameReadException {
         int currentY = Squares.SQ_8.getValue();
         String[] rows = piecesStateString.split(ROW_SEPARATOR);
         if (NUMBER_OF_ROWS != rows.length) {
-            throw new ReadGameError(Settings.lang("invalid_fen_state"), Settings.lang("invalid_fen_number_of_rows"));
+            throw new GameReadException(Settings.lang("invalid_fen_state"), Settings.lang("invalid_fen_number_of_rows"));
         }
         for (String row : piecesStateString.split(ROW_SEPARATOR)) {
             int currentX = Squares.SQ_A.getValue();

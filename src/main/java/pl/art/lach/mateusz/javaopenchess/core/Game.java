@@ -39,7 +39,7 @@ import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataExporter;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataImporter;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataTransferFactory;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.TransferFormat;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
+import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
 import pl.art.lach.mateusz.javaopenchess.core.moves.Move;
 import pl.art.lach.mateusz.javaopenchess.core.moves.MovesHistory;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.Piece;
@@ -264,7 +264,7 @@ public class Game extends JPanel implements ComponentListener, MouseListener {
         return dataExporter.exportData(this);
     }
 
-    public void importGame(String dataInString, DataImporter dataImporter) throws ReadGameError {
+    public void importGame(String dataInString, DataImporter dataImporter) throws GameReadException {
         if (null != dataImporter) {
             dataImporter.importData(dataInString, this);
         }
@@ -754,7 +754,7 @@ public class Game extends JPanel implements ComponentListener, MouseListener {
         this.ai = ai;
     }
 
-    public boolean isIsEndOfGame() {
+    public boolean isEndOfGame() {
         return isEndOfGame;
     }
 

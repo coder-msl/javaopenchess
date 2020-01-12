@@ -17,18 +17,19 @@ package pl.art.lach.mateusz.javaopenchess.core.exceptions;
 /**
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public class ReadGameError extends Exception {
+public class GameReadException extends Exception {
+    
     private static final long serialVersionUID = 1L;
 
     private String message;
 
     private String move;
 
-    public ReadGameError(String message) {
+    public GameReadException(String message) {
         this.message = message;
     }
 
-    public ReadGameError(String message, String move) {
+    public GameReadException(String message, String move) {
         this(message);
         this.move = move;
     }

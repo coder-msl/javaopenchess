@@ -21,11 +21,11 @@ import javax.swing.table.DefaultTableModel;
  * (history cannot be edited by player)
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-class NotEditableTableModel extends DefaultTableModel {
+class ReadOnlyTableModel extends DefaultTableModel {
 
     private static final long serialVersionUID = 1L;
 
-    NotEditableTableModel() {
+    ReadOnlyTableModel() {
         super();
     }
 

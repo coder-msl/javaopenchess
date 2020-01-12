@@ -31,7 +31,7 @@ import pl.art.lach.mateusz.javaopenchess.core.Colors;
 import pl.art.lach.mateusz.javaopenchess.utils.Settings;
 import pl.art.lach.mateusz.javaopenchess.core.Square;
 import org.apache.log4j.Logger;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
+import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.KingState;
 import pl.art.lach.mateusz.javaopenchess.core.pieces.implementation.Pawn;
 import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
@@ -99,7 +99,7 @@ public class MovesHistory extends AbstractTableModel {
 
     private String[] names = new String[] { Settings.lang("white"), Settings.lang("black") };
 
-    private NotEditableTableModel tableModel;
+    private ReadOnlyTableModel tableModel;
 
     private JScrollPane scrollPane;
 
@@ -117,7 +117,7 @@ public class MovesHistory extends AbstractTableModel {
 
     public MovesHistory(Game game) {
         super();
-        this.tableModel = new NotEditableTableModel();
+        this.tableModel = new ReadOnlyTableModel();
         this.table = new JTable(this.tableModel);
         this.scrollPane = new JScrollPane(this.table);
 
@@ -368,15 +368,14 @@ public class MovesHistory extends AbstractTableModel {
         try {
             int from = 0;
             int sign = move.charAt(from);// get First
-            switch (sign) // if sign of piece, get next
-            {
-            case CHAR_B_ASCII:
-            case CHAR_K_ASCII:
-            case CHAR_N_ASCII:
-            case CHAR_Q_ASCII:
-            case CHAR_R_ASCII:
-                from = 1;
-                break;
+            switch (sign) { // if sign of piece, get next
+                case CHAR_B_ASCII:
+                case CHAR_K_ASCII:
+                case CHAR_N_ASCII:
+                case CHAR_Q_ASCII:
+                case CHAR_R_ASCII:
+                    from = 1;
+                    break;
             }
             sign = move.charAt(from);
             LOG.debug("isMoveCorrect/sign: " + sign);
@@ -418,8 +417,7 @@ public class MovesHistory extends AbstractTableModel {
     }
 
     private static boolean isCastling(String move) {
-        return move.equals(Castling.SHORT_CASTLING.getSymbol()) 
-                || move.equals(Castling.LONG_CASTLING.getSymbol());
+        return move.equals(Castling.SHORT_CASTLING.getSymbol()) || move.equals(Castling.LONG_CASTLING.getSymbol());
     }
 
     public void addMoves(ArrayList<String> list) {
@@ -455,9 +453,10 @@ public class MovesHistory extends AbstractTableModel {
      * game)
      * 
      * @param moves String to set in String like PGN with full-notation format
-     * @throws ReadGameError in case if something is wrong when reading PGN notation
+     * @throws GameReadException in case if something is wrong when reading PGN
+     *                           notation
      */
-    public void setMoves(String moves) throws ReadGameError {
+    public void setMoves(String moves) throws GameReadException {
         int from = 0;
         int to = 0;
         int n = 1;
@@ -495,7 +494,7 @@ public class MovesHistory extends AbstractTableModel {
         for (String locMove : tempArray) {
             if (!MovesHistory.isPgnStringMoveSyntaxValid(locMove.trim())) {
                 String message = String.format(Settings.lang("invalid_file_to_load"), locMove);
-                throw new ReadGameError(message, locMove);
+                throw new GameReadException(message, locMove);
             }
         }
         boolean canMove = false;
@@ -546,24 +545,22 @@ public class MovesHistory extends AbstractTableModel {
             canMove = game.simulateMove(xFrom, yFrom, xTo, yTo, null);
             if (!canMove) {
                 game.getChessboard().resetActiveSquare();
-                throw new ReadGameError(String.format(Settings.lang("illegal_move_on"), move), move);
+                throw new GameReadException(String.format(Settings.lang("illegal_move_on"), move), move);
             }
         }
     }
 
     private boolean isBigLetter(int num) {
-        return num >= ASCII_BIG_LETTER_START_INDEX 
-                && num <= ASCII_BIG_LETTER_END_INDEX;
+        return num >= ASCII_BIG_LETTER_START_INDEX && num <= ASCII_BIG_LETTER_END_INDEX;
     }
 
     private boolean isPieceNullOrDifferentColor(Piece piece, Colors activePlayerColor) {
-        return null == piece 
-                || activePlayerColor != piece.getPlayer().getColor();
+        return null == piece || activePlayerColor != piece.getPlayer().getColor();
     }
 
     // TODO: refactor this crap. It returns true if move is possible and trhows
     // exception if not.
-    private boolean processCastling(String move) throws ReadGameError {
+    private boolean processCastling(String move) throws GameReadException {
         boolean canMove;
         int[] values = new int[4];
         Colors color = game.getActivePlayer().getColor();
@@ -575,7 +572,7 @@ public class MovesHistory extends AbstractTableModel {
         canMove = game.simulateMove(values[0], values[1], values[2], values[3], null);
         if (!canMove) {
             String message = String.format(Settings.lang("illegal_move_on"), move);
-            throw new ReadGameError(message, move);
+            throw new GameReadException(message, move);
         }
         return canMove;
     }

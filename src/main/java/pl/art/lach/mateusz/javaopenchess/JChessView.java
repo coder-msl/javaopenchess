@@ -68,7 +68,7 @@ import pl.art.lach.mateusz.javaopenchess.display.windows.NewGameWindow;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataImporter;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataTransferFactory;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.TransferFormat;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
+import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
 import pl.art.lach.mateusz.javaopenchess.display.windows.JChessTabbedPane;
 
 /**
@@ -397,7 +397,7 @@ public class JChessView extends FrameView implements ActionListener, ComponentLi
                     String message = Settings.lang("error_writing_to_file");
                     JOptionPane.showMessageDialog(null, message + ": " + exc);
                 }
-                catch (ReadGameError exc)
+                catch (GameReadException exc)
                 {
                     LOG.error(exc);
                     JOptionPane.showMessageDialog(null, exc.getMessage());

@@ -30,7 +30,7 @@ import pl.art.lach.mateusz.javaopenchess.core.players.PlayerType;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataImporter;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.DataTransferFactory;
 import pl.art.lach.mateusz.javaopenchess.core.data_transfer.TransferFormat;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.ReadGameError;
+import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
 import pl.art.lach.mateusz.javaopenchess.utils.GameModes;
 import pl.art.lach.mateusz.javaopenchess.utils.GameTypes;
 import pl.art.lach.mateusz.javaopenchess.core.Squares;
@@ -180,7 +180,7 @@ public class FenNotationTest
     }
     
     @Test
-    public void testSimpleImportAndExport() throws ReadGameError
+    public void testSimpleImportAndExport() throws GameReadException
     {    
         String state = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1";
         game.importGame(state, dataImporter);
@@ -188,23 +188,23 @@ public class FenNotationTest
     }
 
     @Test
-    public void testSimpleImportAndExportWithFullAndHalfTurnCounter() throws ReadGameError
+    public void testSimpleImportAndExportWithFullAndHalfTurnCounter() throws GameReadException
     {
         String state = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 4 5";
         game.importGame(state, dataImporter);
         assertEquals(state, game.exportGame(dataExporter));
     }
     
-    @Test(expected = ReadGameError.class)
-    public void testSimpleInvalidFile() throws ReadGameError
+    @Test(expected = GameReadException.class)
+    public void testSimpleInvalidFile() throws GameReadException
     {
         String state = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq 4 5";
         game.importGame(state, dataImporter);
         assertEquals(state, game.exportGame(dataExporter));
     }
     
-    @Test(expected = ReadGameError.class)
-    public void testSimpleInvalidNumberOfRows() throws ReadGameError
+    @Test(expected = GameReadException.class)
+    public void testSimpleInvalidNumberOfRows() throws GameReadException
     {
         String state = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP b KQkq e3 4 5";
         game.importGame(state, dataImporter);

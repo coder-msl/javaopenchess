@@ -12,19 +12,28 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package pl.art.lach.mateusz.javaopenchess.core.data_transfer;
-
-import pl.art.lach.mateusz.javaopenchess.core.Game;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
+package pl.art.lach.mateusz.javaopenchess.core.data_transfer.tokenizers;
 
 /**
- * Interface to implement data import from different notations.
- * 
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public interface DataImporter {
+public class Token {
     
-    Game importData(String data) throws GameReadException;
+    private final String token;
+    
+    private final int tokenNumber;
 
-    void importData(String data, Game game) throws GameReadException;
+    public Token(final String token, final int tokenNumber) {
+        this.token = token;
+        this.tokenNumber = tokenNumber;
+    }
+    
+    public String getToken() {
+        return token;
+    }
+    
+    public int getTokenNumber() {
+        return tokenNumber;
+    }
+    
 }

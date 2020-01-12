@@ -12,19 +12,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package pl.art.lach.mateusz.javaopenchess.core.data_transfer;
-
-import pl.art.lach.mateusz.javaopenchess.core.Game;
-import pl.art.lach.mateusz.javaopenchess.core.exceptions.GameReadException;
+package pl.art.lach.mateusz.javaopenchess.core.exceptions;
 
 /**
- * Interface to implement data import from different notations.
+ * Interface to implement data import syntax validator for different notations.
  * 
  * @author Mateusz Slawomir Lach (matlak, msl)
  */
-public interface DataImporter {
-    
-    Game importData(String data) throws GameReadException;
+public class DataSyntaxException extends RuntimeException {
 
-    void importData(String data, Game game) throws GameReadException;
+    private static final long serialVersionUID = 1L;
+    
+    public DataSyntaxException(String msg) {
+        super(msg);
+    }
+
 }
