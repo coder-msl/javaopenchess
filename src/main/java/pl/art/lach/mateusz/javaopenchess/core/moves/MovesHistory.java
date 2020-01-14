@@ -457,6 +457,7 @@ public class MovesHistory extends AbstractTableModel {
      *                           notation
      */
     public void setMoves(String moves) throws GameReadException {
+        //TODO: refactor, this should be part of PGNNotationDataProcessor or PGNTokenizer
         int from = 0;
         int to = 0;
         int n = 1;
@@ -464,7 +465,7 @@ public class MovesHistory extends AbstractTableModel {
         List<String> tempArray = new ArrayList<>();
         int tempStrSize = moves.length() - 1;
         while (true) {
-            int next = from + 1;
+            int next = from + 2;
             from = moves.indexOf(SPACE, from);
             to = moves.indexOf(SPACE, next);
             if (from < 0 || to < 0) {
