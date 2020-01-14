@@ -7,5 +7,5 @@
   </parent>
   <groupId>pl.art.lach.mateusz.openchess.core</groupId>
   <artifactId>core</artifactId>
-  <name>open-chess-core</name>
+  <name>bytom-open-chess-core</name>
 </project>
