@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>pl.art.lach.mateusz.openchess</groupId>
-    <artifactId>open-chess</artifactId>
+    <artifactId>bytom-open-chess</artifactId>
     <version>2.0.0</version>
   </parent>
   <groupId>pl.art.lach.mateusz.openchess.core</groupId>
