@@ -17,7 +17,6 @@ package pl.art.lach.mateusz.openchess.core.pieces;
 /**
  * @author: Mateusz Sławomir Lach 
  */
-abstract class Piece {
-    
-    
+class Pawn extends Piece {
+
 }

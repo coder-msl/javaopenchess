@@ -14,10 +14,18 @@
  */
 package pl.art.lach.mateusz.openchess.core.pieces;
 
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 /**
  * @author: Mateusz Sławomir Lach 
  */
-abstract class Piece {
-    
-    
+public class PawnTest {
+
+    @Test
+    public void test() {
+        
+    }
+
 }
