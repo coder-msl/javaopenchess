@@ -1,1 +1,9 @@
-/target/
+/target
+/.project
+/.settings
+/logs
+*/target/*
+*/target/**
+*/.project
+*/.settings
+*/logs
